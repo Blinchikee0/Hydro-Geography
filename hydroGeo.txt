@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Су ресурстары — негізгі транспорт (анимациялар)</title>
+  <style>
+    /* ------------------------- Basic layout ------------------------- */
+    :root{
+      --bg:#071428; --card:#0b2b3a; --accent:#2dd4bf; --muted:#9fb3bd; --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.03);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: linear-gradient(180deg,var(--bg) 0%, #042030 60%); color:#e6f7f5; -webkit-font-smoothing:antialiased;
+      overflow-x:hidden; padding:40px 20px;
+    }
+    .container{max-width:1100px;margin:0 auto}
+
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    h1{font-size:24px;margin:0}
+    p.lead{color:var(--muted);margin:6px 0 0}
+
+    /* ------------------------- Animated hero ------------------------- */
+    .hero{position:relative;padding:36px;border-radius:14px;background:linear-gradient(135deg, rgba(255,255,255,0.03), transparent);box-shadow:0 6px 24px rgba(2,10,20,0.6);overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:center}
+    .hero-card{padding:18px}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--glass);color:var(--accent);font-weight:600;margin-bottom:12px}
+
+    /* Wave SVG animation */
+    .wave-wrap{position:absolute;right:-20px;bottom:-40px;opacity:0.12;transform:rotate(180deg);width:640px}
+    .boat{position:relative;width:160px;height:80px;margin:30px auto 0}
+    .boat .hull{width:160px;height:40px;background:linear-gradient(90deg,#0a5562,#0f9a87);border-radius:20px 20px 8px 8px;position:absolute;bottom:0;box-shadow:0 6px 18px rgba(2,10,20,0.6)}
+    .boat .flag{position:absolute;left:20px;top:-22px;width:0;height:0;border-left:0 solid transparent}
+    .boat .flag:after{content:'';display:block;width:60px;height:18px;background:linear-gradient(90deg,#ffe59c,#ffd166);border-radius:4px;transform-origin:left center;animation:waveFlag 1.8s ease-in-out infinite}
+    @keyframes waveFlag{0%{transform:skewY(-6deg)}50%{transform:skewY(6deg)}100%{transform:skewY(-6deg)}}
+
+    /* Floating animation for boat */
+    .boat{animation:floatBoat 4s ease-in-out infinite}
+    @keyframes floatBoat{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+
+    /* ------------------------- Animated stats ------------------------- */
+    .stats{display:flex;gap:12px}
+    .stat{flex:1;background:linear-gradient(180deg,var(--glass),var(--glass-2));padding:14px;border-radius:10px;text-align:center}
+    .stat .num{font-size:20px;font-weight:700;color:var(--accent)}
+    .stat .label{font-size:12px;color:var(--muted)}
+
+    /* ------------------------- Marquee sea lanes ------------------------- */
+    .lanes{margin-top:16px;overflow:hidden;border-radius:12px;padding:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent)}
+    .marquee{display:flex;gap:26px;align-items:center;white-space:nowrap}
+    .lane{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,0.08);backdrop-filter:blur(4px)}
+    .marquee{animation:marquee 16s linear infinite}
+    @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    /* ------------------------- Cards with hover transitions ------------------------- */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:16px;border-radius:12px;transition:transform .4s cubic-bezier(.2,.9,.2,1), box-shadow .4s}
+    .card:hover{transform:translateY(-10px);box-shadow:0 14px 40px rgba(2,10,20,0.7)}
+    .card h3{margin:0 0 8px}
+
+    /* ------------------------- Animated map (CSS + JS) ------------------------- */
+    .map{height:260px;border-radius:12px;overflow:hidden;position:relative;background:linear-gradient(180deg,#06313a, #072430);box-shadow:inset 0 0 80px rgba(0,0,0,0.4)}
+    .map svg{width:100%;height:100%}
+    .ship-dot{position:absolute;width:14px;height:14px;border-radius:999px;background:linear-gradient(90deg,#ffd166,#fb7185);box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+    .route{stroke:rgba(255,255,255,0.06);stroke-width:2;fill:none;stroke-dasharray:6}
+
+    /* ------------------------- Bubbles & parallax background ------------------------- */
+    .bubbles{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
+    .bubble{position:absolute;border-radius:50%;opacity:.08;filter:blur(8px);background:linear-gradient(90deg,#2dd4bf,#60a5fa)}
+
+    /* ------------------------- Timeline animated */
+    .timeline{margin-top:20px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);border-radius:12px}
+    .t-row{display:flex;align-items:center;gap:12px;padding:10px 6px}
+    .t-dot{width:12px;height:12px;border-radius:999px;background:var(--accent);transform:scale(0);animation:dotPop .6s forwards}
+    .t-content{color:var(--muted);transform:translateY(10px);opacity:0;animation:contentUp .6s forwards;animation-delay:.15s}
+    @keyframes dotPop{to{transform:scale(1)}}
+    @keyframes contentUp{to{transform:translateY(0);opacity:1}}
+
+    /* ------------------------- Footer wave & CTA ------------------------- */
+    footer{margin-top:24px;text-align:center;color:var(--muted)}
+    .cta{display:inline-block;padding:12px 20px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#052426;font-weight:700;margin-top:12px;transform:translateY(0);transition:transform .25s}
+    .cta:hover{transform:translateY(-6px)}
+
+    /* Responsive tweaks */
+    @media(max-width:880px){.hero-grid{grid-template-columns:1fr} .wave-wrap{display:none}.map{height:220px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Су ресурстары — негізгі транспорт</h1>
+        <p class="lead">Мемлекеттерде судың көліктік маңызы және шаруашылықтағы рөлі — интерактивті демонстрация.</p>
+      </div>
+      <div style="text-align:right">
+        <small style="color:var(--muted)">HTML файл — бір бетте, көп анимациялар</small>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <span class="badge">Ең маңызды — ирригация | тасымал | балық шаруашылығы</span>
+          <h2 style="margin-top:6px">Су жолдарының әсері экономикалық салаларға</h2>
+          <p style="color:var(--muted)">Суды негізгі көлік ретінде пайдаланатын мемлекеттер: Египет (Ніл), Бангладеш, Голландия — бұл елдерде өзендер мен каналдар ауыл шаруашылығын, сауданы және жергілікті қатынасты тиімді қамтамасыз етеді.</p>
+
+          <div class="stats" style="margin-top:14px">
+            <div class="stat"><div class="num" id="c1">0</div><div class="label">Ирригацияға тәуелділік (%)</div></div>
+            <div class="stat"><div class="num" id="c2">0</div><div class="label">Жүк тасымалы (%)</div></div>
+            <div class="stat"><div class="num" id="c3">0</div><div class="label">Балық шаруашылығы (тонн)</div></div>
+          </div>
+
+          <div class="lanes" aria-hidden="true">
+            <div class="marquee" id="marqA">
+              <div class="lane">Ніл — Құмнан құтқарушы</div>
+              <div class="lane">Ганг — жергілікті сауда артериясы</div>
+              <div class="lane">Рейн — Еуропалық логистика</div>
+              <div class="lane">Амазон — ірі жануар тасымалы</div>
+              <div class="lane">Каналдар — Нидерланды</div>
+              <!-- duplicated for seamless scroll -->
+              <div class="lane">Ніл — Құмнан құтқарушы</div>
+              <div class="lane">Ганг — жергілікті сауда артериясы</div>
+              <div class="lane">Рейн — Еуропалық логистика</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:14px;padding-left:26px">
+          <div class="boat" title="boat">
+            <div class="hull"></div>
+            <div class="flag"></div>
+          </div>
+
+          <div class="map" id="map">
+            <!-- SVG map-like abstract with animated routes -->
+            <svg viewBox="0 0 100 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0" stop-color="#60a5fa" stop-opacity="0.6" />
+                  <stop offset="1" stop-color="#2dd4bf" stop-opacity="0.6" />
+                </linearGradient>
+              </defs>
+              <path class="route" d="M5 40 C20 20, 35 40, 50 30 C65 20, 80 30, 95 15" />
+              <path class="route" d="M5 20 C18 10, 34 25, 50 18 C68 10, 82 22, 95 10" />
+              <g id="ships">
+                <circle cx="8" cy="40" r="1.6" fill="url(#g1)">
+                  <animateMotion dur="10s" repeatCount="indefinite" path="M5 40 C20 20, 35 40, 50 30 C65 20, 80 30, 95 15" />
+                </circle>
+                <circle cx="10" cy="20" r="1.6" fill="#ffd166">
+                  <animateMotion dur="14s" repeatCount="indefinite" path="M5 20 C18 10, 34 25, 50 18 C68 10, 82 22, 95 10" />
+                </circle>
+              </g>
+            </svg>
+          </div>
+
+          <div class="bubbles" aria-hidden="true">
+            <div class="bubble" style="width:220px;height:220px;left:10%;top:10%;opacity:0.06"></div>
+            <div class="bubble" style="width:120px;height:120px;left:70%;top:40%;opacity:0.04"></div>
+            <div class="bubble" style="width:160px;height:160px;left:40%;top:65%;opacity:0.05"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wave-wrap">
+        <!-- subtle decorative svg waves -->
+        <svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path fill="#0f2f3a" d="M0 0 C150 100 350 0 600 50 C850 100 1050 20 1200 60 L1200 120 L0 120 Z"></path></svg>
+      </div>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <h3>Ирригация және ауыл шаруашылық</h3>
+        <p style="color:var(--muted);margin:0">Өзен сулары егіншілік үшін маңызды — сумен қамтамасыз етудің жылулық циклін қалпына келтіру, бірнеше өнімдік циклдерді мүмкіндік жасау.</p>
+      </article>
+      <article class="card">
+        <h3>Жүк және логистика</h3>
+        <p style="color:var(--muted);margin:0">Ішкі су жолдары көмегімен арзан әрі энергияға үнемді тасымал жүзеге асады.</p>
+      </article>
+      <article class="card">
+        <h3>Балық шаруашылығы</h3>
+        <p style="color:var(--muted);margin:0">Өзендер мен көлдер жергілікті қоғамдарға тағамдық қауіпсіздікті қамтамасыз етеді.</p>
+      </article>
+      <article class="card">
+        <h3>Туризм және мәдениет</h3>
+        <p style="color:var(--muted);margin:0">Круиздер, жағалаулардағы мәдени орындар мен фестивальдер — жергілікті экономика үшін табыс көзі.</p>
+      </article>
+    </section>
+
+    <section class="timeline" aria-label="timeline">
+      <div class="t-row"><div class="t-dot" style="animation-delay:.05s"></div><div class="t-content">Ніл — ежелгі өркениеттің дамуына негіз</div></div>
+      <div class="t-row"><div class="t-dot" style="animation-delay:.15s"></div><div class="t-content">Ганг және Бенгал шығанағы — жергілікті тасымал және балықшылык</div></div>
+      <div class="t-row"><div class="t-dot" style="animation-delay:.25s"></div><div class="t-content">Рейн — өнеркәсіптік логистика және экспорт</div></div>
+    </section>
+
+    <footer>
+      <div style="max-width:720px;margin:18px auto;color:var(--muted)">Бұл бет — оқу мақсатында дайындалған демонстрация. Түзетулер мен сұраныстарды жіберіңіз.</div>
+      <a class="cta" href="#" onclick="downloadHTML();return false">Файлды жүктеп алу</a>
+    </footer>
+  </div>
+
+  <script>
+    // ---------------- Animated counters ----------------
+    const counters = [
+      {id:'c1', to:72},
+      {id:'c2', to:44},
+      {id:'c3', to:12000}
+    ];
+    counters.forEach(c=>{
+      const el = document.getElementById(c.id);
+      let start = 0; const dur = 1400; const step = Math.ceil(c.to/ (dur/30));
+      const t = setInterval(()=>{
+        start += step;
+        if(start >= c.to){start=c.to; clearInterval(t)}
+        el.textContent = start.toLocaleString();
+      },30);
+    });
+
+    // ---------------- Moving ship dots over the map (DOM) ----------------
+    const map = document.getElementById('map');
+    const ship1 = document.createElement('div'); ship1.className='ship-dot'; ship1.style.left='6%'; ship1.style.top='62%'; map.appendChild(ship1);
+    const ship2 = document.createElement('div'); ship2.className='ship-dot'; ship2.style.left='10%'; ship2.style.top='34%'; map.appendChild(ship2);
+
+    // animate along simple bezier-ish points
+    const paths = [
+      [{x:6,y:62},{x:20,y:40},{x:36,y:56},{x:52,y:46},{x:68,y:36},{x:88,y:24}],
+      [{x:10,y:34},{x:24,y:22},{x:40,y:32},{x:56,y:26},{x:74,y:18},{x:92,y:12}]
+    ];
+    function animateShip(el, pts, dur){
+      let t=0; function step(){
+        t+=1/60; const p = (t/dur);
+        if(p>=1){t=0}
+        // simple segment interpolation
+        const idx = Math.floor(p*(pts.length-1));
+        const frac = (p*(pts.length-1))-idx;
+        const A = pts[idx], B = pts[Math.min(idx+1, pts.length-1)];
+        const x = A.x + (B.x-A.x)*frac; const y = A.y + (B.y-A.y)*frac;
+        el.style.left = x + '%'; el.style.top = y + '%';
+        requestAnimationFrame(step);
+      }
+      step();
+    }
+    animateShip(ship1, paths[0], 12);
+    animateShip(ship2, paths[1], 18);
+
+    // ---------------- Floating decorative bubbles ----------------
+    document.querySelectorAll('.bubble').forEach((b,i)=>{
+      const delay = i*0.8; b.animate([
+        {transform:'translateY(0) scale(1)'},
+        {transform:'translateY(-24px) scale(1.05)'},
+        {transform:'translateY(0) scale(1)'}
+      ],{duration:5000+ i*800, iterations:Infinity, easing:'ease-in-out', delay:delay*1000});
+    });
+
+    // ---------------- Marquee speed on hover ----------------
+    const marq = document.getElementById('marqA');
+    marq.addEventListener('mouseenter', ()=> marq.style.animationPlayState='paused');
+    marq.addEventListener('mouseleave', ()=> marq.style.animationPlayState='running');
+
+    // ---------------- Download HTML of this page ----------------
+    function downloadHTML(){
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'water_transport_demo.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // small accessibility: reduce motion if user prefers
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq.matches){ document.querySelectorAll('*').forEach(n=>n.style.animation='none'); }
+  </script>
+</body>
+</html>
